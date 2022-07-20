@@ -3,9 +3,9 @@ from pymanopt.manifolds.manifold import Manifold
 from pymanopt import Problem
 import autograd.numpy as np
 import pymanopt.manifolds
-from pymanopt.optimizers import ConjugateGradient
+from manopt.algorithms import ConjugateGradient
 
-def svd(A,p,init=None):
+def svd_hybrid(A,p,beta_type,init=None):
     m = A.shape[0]
     n = A.shape[1]
     l = [1/(i+1) for i in range(p)]
@@ -24,14 +24,13 @@ def svd(A,p,init=None):
     # define problem and solver
     problem = Problem(manifold=manifold, cost=cost)
     solver = ConjugateGradient(
-    verbosity=2,
-    log_verbosity=1,
-    beta_rule="PolakRibiere",
-    min_gradient_norm=1e-1000,
-    min_step_size=1e-1000,
-    max_iterations=3000
-    )
-    
+        beta_type=beta_type,
+        verbosity=2,
+        log_verbosity=1,
+        min_gradient_norm=1e-1000,
+        min_step_size=1e-1000,
+        max_iterations=3000)
+
     # run
     if init=="np.svd":
         # initial guess

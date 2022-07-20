@@ -7,7 +7,7 @@ from numba import jit
 from torch import dtype
 
 class alg441():
-  def __init__(self,fn = None,itemax=5,init="np.svd",c1=1e-10,eps=1e-100,verbose=False):
+  def __init__(self,fn = None,itemax=3000,init="np.svd",c1=1e-10,eps=1e-100,verbose=False):
     if fn == None:
       time = datetime.datetime.now()
       self.fn = time.strftime('%Y%m%d%H%M%S')+".csv"
@@ -127,8 +127,8 @@ class alg441():
       if param["verbose"]:
         if c ==1:
           alphak = np.nan
-        alg441.log(np.trace(Uk.T@A@Vk@N),alg441.norm_gradF(A,N,Uk,Vk),alphak,"log",param)
-        print(c,np.trace(Uk.T@A@Vk@N),alg441.norm_gradF(A,N,Uk,Vk),alphak)
+        alg441.log(-np.trace(Uk.T@A@Vk@N),alg441.norm_gradF(A,N,Uk,Vk),alphak,"log",param)
+        print(c,-np.trace(Uk.T@A@Vk@N),alg441.norm_gradF(A,N,Uk,Vk),alphak)
       if c > param["itemax"]:
         break
       xik,etak = alg441.gradF(A,N,Uk,Vk)

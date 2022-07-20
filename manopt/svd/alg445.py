@@ -81,14 +81,14 @@ class alg445():
       uk,vk = alg445._R(uk,vk,etak,xik)
       if param["verbose"]:
         p = Uk.shape[1]
-        #l = [1/(i+1) for i in range(p)]
-        l = [i+1 for i in range(p)]
-        l.reverse()
+        l = [1/(i+1) for i in range(p)]
+        #l = [i+1 for i in range(p)]
+        #l.reverse()
         N = np.diag(l)
         N.astype(np.longdouble)
 
-        alg445.log(np.trace(Uk.T@A@Vk@N),alg445.norm_gradF(A,N,Uk,Vk),np.nan,"log",param)
-        print(k,np.trace(Uk.T@A@Vk@N),alg445.norm_gradF(A,N,Uk,Vk),np.nan)
+        alg445.log(-np.trace(Uk.T@A@Vk@N),alg445.norm_gradF(A,N,Uk,Vk),np.nan,"log",param)
+        print(k,-np.trace(Uk.T@A@Vk@N),alg445.norm_gradF(A,N,Uk,Vk),np.nan)
     #step5
     return uk,vk
 
