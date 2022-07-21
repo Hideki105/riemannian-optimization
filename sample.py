@@ -8,7 +8,7 @@ c1: float=1e-4
 c2: float=0.1
 
 np.random.seed(100)
-m, n, rank = 20, 20, 20
+m, n, rank = 5, 3, 2
 Ur, _ = np.linalg.qr(np.random.normal(size=(m, rank)))
 Vr, _ = np.linalg.qr(np.random.normal(size=(rank, n)))
 S = np.diag(np.arange(rank, 0, -1))
