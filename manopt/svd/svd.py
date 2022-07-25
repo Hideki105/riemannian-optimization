@@ -27,8 +27,8 @@ def svd(A,p,init=None):
     verbosity=2,
     log_verbosity=1,
     beta_rule="PolakRibiere",
-    min_gradient_norm=1e-1000,
-    min_step_size=1e-1000,
+    min_gradient_norm=1e-100,
+    min_step_size=1e-100,
     max_iterations=3000
     )
     

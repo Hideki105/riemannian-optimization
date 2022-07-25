@@ -8,7 +8,7 @@ c1: float=1e-4
 c2: float=0.1
 
 np.random.seed(100)
-m, n, rank = 5, 3, 2
+m, n, rank = 500, 300, 10
 Ur, _ = np.linalg.qr(np.random.normal(size=(m, rank)))
 Vr, _ = np.linalg.qr(np.random.normal(size=(rank, n)))
 S = np.diag(np.arange(rank, 0, -1))
@@ -153,8 +153,12 @@ time_ = datetime.datetime.now()
 csvfn = time_.strftime('%Y%m%d%H%M%S')+".csv"
 U,V,res = svd(A,rank,init)
 S = set_sigma(A,U,V)
+to_csv(csvfn,res)
 viewer.bar(A,U,V,rank,csvfn)
-
+viewer.run(csvfn)
+eval = evaluation(A,U,V,rank,csvfn)
+eval_result = eval.result()
+eval.savecsv()
 
 from manopt.svd.svd import svd
 from manopt.svd.alg445 import alg445

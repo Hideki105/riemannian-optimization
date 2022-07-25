@@ -22,7 +22,7 @@ class alg443():
     self._alphakold = None
   
   @staticmethod
-  @jit(cache=True,forceobj=True)
+  #@jit(cache=True,forceobj=True)
   def initial_point(A,rank,param):
     m = A.shape[0]
     n = A.shape[1]
@@ -51,14 +51,14 @@ class alg443():
     V0.astype(np.longdouble)
     return U0,V0
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def gradF(A,N,Uk,Vk):
     xik_  = Uk@alg443.multisym(Uk.T@A@Vk@N)  - A@Vk@N
     etak_ = Vk@alg443.multisym(Vk.T@A.T@Uk@N)- A.T@Uk@N
     return xik_,etak_
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def norm_gradF(A,N,Uk,Vk):
     xik_,etak_ = alg443.gradF(A,N,Uk,Vk)
@@ -73,7 +73,7 @@ class alg443():
     return (X+X.T)*0.5
   """
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def multitransp(A):
     """Vectorized matrix transpose.
@@ -88,7 +88,7 @@ class alg443():
         return A.T
     return np.transpose(A, (0, 2, 1))
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def multisym(A):
     """Vectorized matrix symmetrization.
@@ -100,7 +100,7 @@ class alg443():
     return 0.5 * (A + alg443.multitransp(A))
 
 
-  #@staticmethod
+  @staticmethod
   @jit(cache=True)
   def rho_skew(X):
     for i in range(X.shape[0]):
@@ -113,7 +113,7 @@ class alg443():
           pass
     return X
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def vector_transport(Uk,Vk,xi,eta,zeta,chi,param):
     Q1 = alg443.multiqr(Uk+xi)
@@ -137,12 +137,12 @@ class alg443():
     
     return trpt_xikp1,trpt_etakp1
   
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def cost(A,N,Uk,Vk):
     return -np.trace(Uk.T@A@Vk@N)
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def multiqr(A):
     #Vectorized QR decomposition.
@@ -166,7 +166,7 @@ class alg443():
     return Q
   """
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def R(Uk,Vk,etak,xik,alphak):
     if alphak == 0:
@@ -176,7 +176,7 @@ class alg443():
       Vkp1 = alg443.multiqr(Vk+alphak*etak)
     return Ukp1,Vkp1
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def calc_betakp1(xikp1_,etakp1_,xik_,etak_,Ukp1,Vkp1,param):
     if param["CALC_BETAKP1"] == "PR":
@@ -191,14 +191,14 @@ class alg443():
     
     return betakp1
 
-  #@staticmethod
+  @staticmethod
   def savecsv(d_,logpath):
     with open(logpath,"a") as f:
       np.savetxt(f,d_.reshape(1,d_.size), delimiter=",")
     time.sleep(1e-10)
     return
   
-  #@staticmethod
+  @staticmethod
   def log(e,n,a,logpath,param):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     logpath = os.path.join(BASE_DIR,logpath,param["fn"])
@@ -206,13 +206,13 @@ class alg443():
     alg443.savecsv(d_,logpath)
     return
   
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def norm(tangent_vector):
     n = np.linalg.norm(tangent_vector)
     return n
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def armijo_rule(A,N,Uk,Vk,etak,xik,alphak,param):
     left  = alg443.phi(A,N,Uk,Vk,etak,xik,alphak)
@@ -220,14 +220,14 @@ class alg443():
           + param["c1"]*alg443.phi_grad(A,N,Uk,Vk,etak,xik,0,param)
     return left<right
   
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def wolfe_rule(A,N,Uk,Vk,etak,xik,alphak,param):
     left = alg443.phi_grad(A,N,Uk,Vk,etak,xik,alphak,param)
     right= param["c2"]*alg443.phi_grad(A,N,Uk,Vk,etak,xik,0,param)
     return left>right
   
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def check_wolfe_condition(A,N,Uk,Vk,etak,xik,alphak,param):  
     flg1 = alg443.armijo_rule(A,N,Uk,Vk,etak,xik,alphak,param)
@@ -237,13 +237,13 @@ class alg443():
     else:
       return 0
     
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def phi(A,N,Uk,Vk,etak,xik,alphak):
     Ukp1,Vkp1 = alg443.R(Uk,Vk,etak,xik,alphak)
     return alg443.cost(A,N,Ukp1,Vkp1)
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def phi_grad(A,N,Uk,Vk,etak,xik,alphak,param):
     Ukp1,Vkp1         = alg443.R(Uk,Vk,etak,xik,alphak)
@@ -251,7 +251,7 @@ class alg443():
     trpt_xikp1,trpt_etakp1  = alg443.vector_transport(Uk,Vk,alphak*xik,alphak*etak,xik,etak,param)
     return np.trace(gradF_Uk.T@trpt_xikp1)+np.trace(gradF_Vk.T@trpt_etakp1)
   
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def zoom(alpha_lo,alpha_hi,A,N,Uk,Vk,etak,xik,param):
     eps = 1e-10
@@ -288,7 +288,7 @@ class alg443():
       i=i+1
     return alpha_lo
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def calc_alpha(alpha_pre,alpha_cur,A,N,Uk,Vk,etak,xik,param):
     phi_alpha_cur = alg443.phi(A,N,Uk,Vk,etak,xik,alpha_cur) 
@@ -311,8 +311,8 @@ class alg443():
       alphak = (alpha_cur+alpha_pre)/2
     return alphak
 
-  #@staticmethod
-  #@jit(cache=True,forceobj=True)
+  @staticmethod
+  ##@jit(cache=True,forceobj=True)
   def line_search(A,N,Uk,Vk,etak,xik,param):
     alpha_max = 1
     alpha_min = 1e-5
@@ -367,7 +367,7 @@ class alg443():
     self._alphakold = alphak
     return alphak
 
-  #@staticmethod
+  @staticmethod
   #@jit(cache=True,forceobj=True)
   def calc_sacaling(xik,etak,trpt_xikp1,trpt_etakp1):
     tmp = (alg443.norm(xik)+alg443.norm(etak))/(alg443.norm(trpt_xikp1)+alg443.norm(trpt_etakp1))

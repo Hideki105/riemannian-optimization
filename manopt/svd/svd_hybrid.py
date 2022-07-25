@@ -27,8 +27,8 @@ def svd_hybrid(A,p,beta_type,init=None):
         beta_type=beta_type,
         verbosity=2,
         log_verbosity=1,
-        min_gradient_norm=1e-1000,
-        min_step_size=1e-1000,
+        min_gradient_norm=1e-100,
+        min_step_size=1e-100,
         max_iterations=3000)
 
     # run
