@@ -47,7 +47,6 @@ def ica_hybrid_stiefel(D,beta_type):
                     matrices.append(C)
         return matrices
     
-    #print(D)
     manifold = Stiefel(D.shape[0], D.shape[1])
     matrices = set_matrices(D)
     cost = create_cost(matrices)
