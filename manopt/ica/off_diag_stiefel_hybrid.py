@@ -1,11 +1,11 @@
 import autograd.numpy as np
 
 import pymanopt
-from pymanopt.manifolds import Oblique
-from pymanopt.optimizers import ConjugateGradient
+from pymanopt.manifolds import Stiefel
+from manopt.algorithms import ConjugateGradient
 from sklearn.decomposition import FastICA
 
-def ica_hybrid_oblique(D,beta_type):
+def ica_hybrid_stiefel(D,beta_type):
     ica = FastICA(n_components=D.shape[1])
     S_ = ica.fit_transform(D)
     
@@ -15,7 +15,7 @@ def ica_hybrid_oblique(D,beta_type):
             _sum = 0.
             for matrix in matrices:
                 Y = X.T @ matrix @ X
-                _sum += np.linalg.norm(Y - np.diag(np.diag(Y))) ** 2
+                _sum += - np.linalg.norm(np.diag(Y)) ** 2
             return _sum
         return cost
 
@@ -47,7 +47,7 @@ def ica_hybrid_oblique(D,beta_type):
                     matrices.append(C)
         return matrices
     
-    manifold = Oblique(D.shape[0], D.shape[1])
+    manifold = Stiefel(D.shape[0], D.shape[1])
     matrices = set_matrices(D)
     cost = create_cost(matrices)
     

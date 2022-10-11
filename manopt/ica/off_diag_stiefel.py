@@ -2,7 +2,7 @@ import autograd.numpy as np
 
 import pymanopt
 from pymanopt.manifolds import Stiefel
-from manopt.algorithms import ConjugateGradient
+from pymanopt.optimizers import ConjugateGradient
 from sklearn.decomposition import FastICA
 
 def ica_hybrid_stiefel(D,beta_type):

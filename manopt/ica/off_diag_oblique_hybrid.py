@@ -2,7 +2,7 @@ import autograd.numpy as np
 
 import pymanopt
 from pymanopt.manifolds import Oblique
-from pymanopt.optimizers import ConjugateGradient
+from manopt.algorithms import ConjugateGradient
 from sklearn.decomposition import FastICA
 
 def ica_hybrid_oblique(D,beta_type):

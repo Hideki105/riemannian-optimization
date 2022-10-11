@@ -2,11 +2,6 @@ import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
 
-from manopt.ica.off_diag_oblique import ica_hybrid_oblique
-from manopt.ica.off_diag_stiefel import ica_hybrid_stiefel
-
-from sklearn.decomposition import FastICA
-
 def get_signal():
     np.random.seed(0)
     n_samples = 50
@@ -50,7 +45,50 @@ def show_resul(X,S,S_1,S_2):
     plt.savefig(".\ica_result.png")
     plt.close()
 
+def print_result(S,S_1,S_2):
+    JJ1 = 0
+    JJ2 = 0
+    for i in range(S.shape[1]):
+        J1 = []
+        J2 = []
+        for j in range(S.shape[1]):
+            j1 = np.min([np.linalg.norm(S[:,i]-S_1[:,j]),np.linalg.norm(S[:,i]+S_1[:,j])])
+            j2 = np.min([np.linalg.norm(S[:,i]-S_2[:,j]),np.linalg.norm(S[:,i]+S_2[:,j])])
+            J1.append(j1)
+            J2.append(j2)
+        #print(np.min(J1))
+        #print(np.min(J2))
+        print((np.min(J2)-np.min(J1))/np.min(J2)*100)
+
 def main():
+    from manopt.ica.off_diag_oblique_hybrid import ica_hybrid_oblique
+    from manopt.ica.off_diag_stiefel_hybrid import ica_hybrid_stiefel
+    from sklearn.decomposition import FastICA
+    
+    A,X,S = get_signal()
+
+    
+    ica = FastICA(n_components=3)
+    S_1 = ica.fit_transform(X)
+
+    BetaTypes = ["PolakRibiere"]
+    for beta_type in BetaTypes:
+        res = ica_hybrid_oblique(X,beta_type=beta_type)
+        print("---------")
+        print(beta_type)
+        print_result(S,S_1,res.point)
+        print("---------")
+        print(beta_type)
+        res = ica_hybrid_stiefel(X,beta_type=beta_type)
+        print_result(S,S_1,res.point)
+
+    show_resul(X,S,res.point,res.point)
+
+def main_hybrid():
+    from manopt.ica.off_diag_oblique_hybrid import ica_hybrid_oblique
+    from manopt.ica.off_diag_stiefel_hybrid import ica_hybrid_stiefel
+    from sklearn.decomposition import FastICA
+
     A,X,S = get_signal()
 
     
@@ -70,20 +108,6 @@ def main():
 
     show_resul(X,S,res.point,res.point)
 
-def print_result(S,S_1,S_2):
-    JJ1 = 0
-    JJ2 = 0
-    for i in range(S.shape[1]):
-        J1 = []
-        J2 = []
-        for j in range(S.shape[1]):
-            j1 = np.min([np.linalg.norm(S[:,i]-S_1[:,j]),np.linalg.norm(S[:,i]+S_1[:,j])])
-            j2 = np.min([np.linalg.norm(S[:,i]-S_2[:,j]),np.linalg.norm(S[:,i]+S_2[:,j])])
-            J1.append(j1)
-            J2.append(j2)
-        #print(np.min(J1))
-        #print(np.min(J2))
-        print((np.min(J2)-np.min(J1))/np.min(J2)*100)
-
 if __name__ == "__main__":
     main()
+    main_hybrid()
