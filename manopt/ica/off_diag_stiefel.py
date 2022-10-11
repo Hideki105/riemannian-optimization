@@ -5,7 +5,7 @@ from pymanopt.manifolds import Stiefel
 from pymanopt.optimizers import ConjugateGradient
 from sklearn.decomposition import FastICA
 
-def ica_hybrid_stiefel(D,beta_type):
+def ica_stiefel(D,beta_type):
     ica = FastICA(n_components=D.shape[1])
     S_ = ica.fit_transform(D)
     
@@ -52,7 +52,7 @@ def ica_hybrid_stiefel(D,beta_type):
     cost = create_cost(matrices)
     
     problem = pymanopt.Problem(manifold, cost=cost)
-    solver = ConjugateGradient(beta_type=beta_type
+    solver = ConjugateGradient(beta_rule=beta_type
                                       ,max_iterations=5
                                       ,verbosity=2
                                       ,log_verbosity=1

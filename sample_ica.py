@@ -61,8 +61,8 @@ def print_result(S,S_1,S_2):
         print((np.min(J2)-np.min(J1))/np.min(J2)*100)
 
 def main():
-    from manopt.ica.off_diag_oblique_hybrid import ica_hybrid_oblique
-    from manopt.ica.off_diag_stiefel_hybrid import ica_hybrid_stiefel
+    from manopt.ica.off_diag_oblique import ica_oblique
+    from manopt.ica.off_diag_stiefel import ica_stiefel
     from sklearn.decomposition import FastICA
     
     A,X,S = get_signal()
@@ -73,13 +73,13 @@ def main():
 
     BetaTypes = ["PolakRibiere"]
     for beta_type in BetaTypes:
-        res = ica_hybrid_oblique(X,beta_type=beta_type)
+        res = ica_oblique(X,beta_type=beta_type)
         print("---------")
         print(beta_type)
         print_result(S,S_1,res.point)
         print("---------")
         print(beta_type)
-        res = ica_hybrid_stiefel(X,beta_type=beta_type)
+        res = ica_stiefel(X,beta_type=beta_type)
         print_result(S,S_1,res.point)
 
     show_resul(X,S,res.point,res.point)
