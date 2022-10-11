@@ -34,7 +34,7 @@ def show_resul(X,S,S_1,S_2):
         "Observations (mixed signal)",
         "True Sources",
         "ICA recovered signals (Riemannian Optimization)",
-        "ICA recovered signals (Sklearn)",
+        "ICA recovered signals (FastICA)",
     ]
 
     
