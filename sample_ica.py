@@ -21,7 +21,7 @@ def get_signal():
     X = np.dot(S, A.T)  # Generate observations
     return A,X,S
 
-def show_resul(X,S,S_1,S_2):
+def show_resul(X,S,S_1,S_2,pngfn):
     plt.figure()
 
     models = [X, S, S_1,S_2]
@@ -42,7 +42,7 @@ def show_resul(X,S,S_1,S_2):
             plt.plot(sig, color=color)
 
     plt.tight_layout()
-    plt.savefig(".\ica_result.png")
+    plt.savefig(pngfn)
     plt.close()
 
 def print_result(S,S_1,S_2):
@@ -67,22 +67,24 @@ def main():
     
     A,X,S = get_signal()
 
-    
     ica = FastICA(n_components=3)
     S_1 = ica.fit_transform(X)
 
     BetaTypes = ["PolakRibiere"]
     for beta_type in BetaTypes:
-        res = ica_oblique(X,beta_type=beta_type)
         print("---------")
         print(beta_type)
+        res = ica_oblique(X,beta_type=beta_type)
         print_result(S,S_1,res.point)
+        pngfn = "oblique_{0}.png".format(beta_type)
+        show_resul(X,S,res.point,S_1,pngfn)
+
         print("---------")
         print(beta_type)
         res = ica_stiefel(X,beta_type=beta_type)
         print_result(S,S_1,res.point)
-
-    show_resul(X,S,res.point,res.point)
+        pngfn = "stiefel_{0}.png".format(beta_type)
+        show_resul(X,S,res.point,S_1,pngfn)
 
 def main_hybrid():
     from manopt.ica.off_diag_oblique_hybrid import ica_hybrid_oblique
@@ -97,16 +99,19 @@ def main_hybrid():
 
     BetaTypes = ["DaiYuan","PolakRibiere", "Hybrid1", "Hybrid2"]
     for beta_type in BetaTypes:
-        res = ica_hybrid_oblique(X,beta_type=beta_type)
         print("---------")
         print(beta_type)
+        res = ica_hybrid_oblique(X,beta_type=beta_type)
         print_result(S,S_1,res.point)
+        pngfn = "hybrid_oblique_{0}.png".format(beta_type)
+        show_resul(X,S,res.point,S_1,pngfn)
+
         print("---------")
         print(beta_type)
         res = ica_hybrid_stiefel(X,beta_type=beta_type)
         print_result(S,S_1,res.point)
-
-    show_resul(X,S,res.point,res.point)
+        pngfn = "hybrid_stiefel_{0}.png".format(beta_type)
+        show_resul(X,S,res.point,S_1,pngfn)
 
 if __name__ == "__main__":
     main()
